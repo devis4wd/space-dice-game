@@ -1,1 +1,861 @@
+/*
+  This project is distributed under the GPL v2 License.
+  For more details, see the full license text at:
+  https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+*/
 
+@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Share+Tech+Mono&display=swap');
+
+*,
+::before,
+::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+:root {
+  --main-grey: #d9d9d9;
+  --dark-grey: #a4a4a4;
+  --flashy-orange: #f16d34;
+  --tech-blue: #1ed0ef;
+  --tech-green: #10eb8c;
+  --tech-green-light: #0dc274a9;
+  --active-player-green: #1ed0ef8d;
+  --active-player-score: #000000;
+  --jolly-magenta: #e2349c;
+  --space-blue: #2f5b80;
+  --black: #000;
+  --white: #fff;
+  --gold: rgba(235, 169, 26, 0.828);
+  --shiny-gold: rgb(249, 190, 40);
+  --rust: #866359;
+  --red: #853636;
+  --dark-red: #b51414;
+}
+
+html {
+  font-size: 62.5%;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Share Tech Mono", monospace;
+  font-weight: 400;
+  height: 100vh;
+  color: var(--black);
+
+  /* Use relative path (works on GitHub Pages / subfolders) */
+  background-image: url(../img/spacelivery.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Layout */
+main {
+  justify-content: space-evenly;
+  width: 100rem;
+  height: 60rem;
+  border-radius: 70px;
+  overflow: hidden;
+  display: flex;
+  position: relative;
+}
+
+.control-panel {
+  width: 31%;
+  padding: 5.3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.small-btn {
+  position: relative;
+  width: 100%;
+  margin: 2rem 0;
+  font-size: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.player {
+  width: 31%;
+  flex: 50%;
+  background-color: transparent;
+  padding: 7rem 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  transition: all 0.75s;
+}
+
+/* Player dock (name + total score) */
+.player-details {
+  width: 26rem;
+  height: 22rem;
+  padding: 0.8rem;
+  border-radius: 55px;
+  text-align: center;
+  box-shadow: inset 6px 5px 6px 3px rgba(80, 90, 105, 0.445),
+    inset -5px -5px 8px 4px rgba(247, 251, 255, 0.65), -3px -3px 7px 4px rgba(247, 251, 255, 0.90),
+    4px 4px 7px 5px rgba(80, 90, 105, 0.65);
+
+  /* Smooth transitions when .player--active is applied */
+  transition: background-color 0.3s ease, border-color 0.6s ease;
+
+  border: 3px solid #463d32a5;
+}
+
+/* Terminal-style current score box */
+.current {
+  font-family: "Pixelify Sans", sans-serif;
+  color: var(--tech-blue);
+  background-color: var(--black);
+  border: 3px solid var(--flashy-orange);
+  border-radius: 30px;
+  width: 21.5rem;
+  padding: 2rem;
+  text-align: left;
+  transition: all 0.75s;
+  margin-top: 8rem;
+  box-shadow: -3px -3px 7px 4px rgba(247, 251, 255, 0.90),
+    4px 4px 7px 5px rgba(80, 90, 105, 0.65);
+}
+
+/* 3D Dice stage */
+.dice-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--black);
+  border: 4px solid rgb(193, 150, 42);
+  width: 14rem;
+  height: 14rem;
+  border-radius: 100%;
+  perspective: 1000px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: -4px -4px 6px 3px rgba(247, 251, 255, 0.90),
+    6px 6px 10px 5px rgba(80, 90, 105, 0.65);
+}
+
+/* 3D cube container */
+.dice {
+  width: 7rem;
+  height: 7rem;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 4s ease-in-out;
+  border-radius: 5px;
+  opacity: 1;
+}
+
+/* Dice face */
+.face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border: 2px solid rgb(140, 106, 20);
+  border-radius: 5px;
+}
+
+/* Face placement (cube) */
+.front {
+  transform: translateZ(3.5rem);
+}
+
+.back {
+  transform: translateZ(-3.5rem);
+}
+
+.right {
+  transform: rotateY(90deg) translateZ(3.5rem);
+}
+
+.left {
+  transform: rotateY(-90deg) translateZ(3.5rem);
+}
+
+.top {
+  transform: rotateX(90deg) translateZ(3.5rem);
+}
+
+.bottom {
+  transform: rotateX(-90deg) translateZ(3.5rem);
+}
+
+.face img {
+  width: 100%;
+}
+
+/* Modal */
+.btn--info {
+  position: absolute;
+  bottom: 3%;
+  border: 1px solid var(--space-blue);
+  border-radius: 50rem;
+  box-shadow: -4px -4px 5px 2px rgba(247, 251, 255, 0.90),
+    3px 3px 3px 1px rgba(80, 90, 105, 0.65);
+
+  /* Use relative path (works on GitHub Pages / subfolders) */
+  background-image: url(../img/space-dice-logo.png);
+
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  width: 3rem;
+  height: 3rem;
+  cursor: pointer;
+}
+
+.close-modal {
+  position: absolute;
+  top: 1.2rem;
+  right: 2rem;
+  font-size: 5rem;
+  color: var(--white);
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+.hidden {
+  display: none;
+}
+
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  height: 83%;
+  border: 4px solid var(--tech-blue);
+  background-color: #ff620094;
+  box-shadow: 0px 0px 10px 2px var(--tech-blue);
+  padding: 6rem;
+  border-radius: 20px;
+  z-index: 10;
+}
+
+.modal h1 {
+  font-size: 4rem;
+  color: var(--white);
+}
+
+.modal ol {
+  color: black;
+  list-style: none;
+  margin-top: 2.5rem;
+}
+
+.modal li {
+  font-size: 2.1rem;
+  line-height: 3rem;
+  text-indent: -1rem;
+  padding-left: 1rem;
+}
+
+.modal li::before {
+  content: "// ";
+  font-weight: bold;
+  color: var(--tech-blue);
+}
+
+.modal span {
+  color: white;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  z-index: 5;
+}
+
+/* UI elements */
+.console-model {
+  width: 15%;
+  position: absolute;
+  top: -15%;
+  left: 2%;
+}
+
+.name {
+  font-size: 4rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  word-spacing: 2px;
+  font-weight: 300;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+}
+
+.win-message {
+  font-size: 0;
+  color: var(--shiny-gold);
+  margin: 0.5rem auto;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.score {
+  font-size: 8rem;
+  font-weight: 300;
+  color: var(--black);
+  margin-bottom: auto;
+}
+
+.terminal-label {
+  font-size: 8px;
+}
+
+.current-label {
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  font-size: 1.7rem;
+}
+
+.current-score {
+  font-size: 3.5rem;
+  text-align: center;
+  color: var(--flashy-orange);
+}
+
+/* Buttons */
+.btn {
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 1.8rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-weight: 400;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  padding: 0.7rem 2.5rem;
+  border-radius: 50rem;
+  box-shadow: -4px -4px 6px 2px rgba(247, 251, 255, 0.90),
+    5px 5px 6px 2px rgba(80, 90, 105, 0.65);
+}
+
+.small-btn .btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 6.5rem;
+  height: 6.5rem;
+  border-radius: 100rem;
+}
+
+.small-btn:first-of-type p {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate(-110%, -50%);
+}
+
+.small-btn:last-of-type p {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translate(110%, -50%);
+}
+
+.btn::first-letter {
+  font-size: 2.4rem;
+  display: inline-block
+}
+
+.btn--new {
+  width: 15rem;
+  height: 5rem;
+  border: 2px solid var(--gold);
+}
+
+.btn--roll {
+  top: 39.3rem;
+  border: 2px solid var(--dark-grey);
+}
+
+.btn--hold {
+  top: 46.1rem;
+  border: 2px solid var(--dark-grey);
+}
+
+/* Active player */
+.player--active .player-details {
+  background-color: var(--active-player-green);
+  border: 3px solid var(--flashy-orange);
+}
+
+.player--active .name {
+  font-weight: 700;
+}
+
+.player--active .score {
+  color: var(--active-player-score);
+}
+
+/* Button effects */
+.btn--new.pulsing {
+  animation: pulse-animation 3s ease-in-out infinite;
+}
+
+.btn--new:hover {
+  border: 2px solid #e1339bbc;
+}
+
+.btn--new:active {
+  transform: translate(0%, 3px);
+  border: 2px solid #e1339bbc;
+  box-shadow: 0px 0px 8px 1px #e1339b8c, inset 0px 0px 10px 2px #e1339b8c;
+}
+
+.btn--roll:hover {
+  border: 1px solid var(--flashy-orange);
+}
+
+.btn--roll:active {
+  transform: translate(0%, 3px);
+  border: 1px solid var(--flashy-orange);
+  box-shadow: 0px 0px 8px 1px rgba(253, 101, 36, 0.555), inset 0px 0px 10px 2px rgba(253, 101, 36, 0.555);
+}
+
+.btn--hold:hover {
+  border: 1px solid var(--tech-green);
+}
+
+.btn--hold:active {
+  transform: translate(0%, 3px);
+  border: 1px solid var(--tech-green);
+  box-shadow: 0px 0px 8px 1px #10eb8c6f, inset 0px 0px 10px 2px #10eb8c6f;
+}
+
+.btn--info:hover {
+  outline: 2px solid #1ed0ef67;
+}
+
+.btn--info:active {
+  transform: translate(0%, 3px);
+  outline: 2px solid #1ed0ef67;
+  box-shadow: 0px 0px 8px 2px rgba(36, 148, 253, 0.555), inset 2px 2px 30px 3px #82e4f56c;
+}
+
+.btn:focus {
+  outline: none;
+}
+
+/* Winner effects */
+.player--winner .player-details {
+  animation: win-emerge 2s linear forwards;
+}
+
+.score.highlights {
+  animation: highlights 1.2s linear forwards;
+}
+
+.player--winner .name,
+.player--winner .score {
+  animation: erease-dock 0.8s ease-in-out forwards;
+  transform-origin: left center;
+}
+
+.player--winner .name {
+  animation: writing-winner-name 5s ease-in-out forwards;
+  transform-origin: left center;
+}
+
+.player--winner .win-message {
+  animation: writing-winner-message 4.2s ease-in-out forwards;
+  transform-origin: left center;
+}
+
+.player-details.original-position {
+  animation: original-position 2s ease-in-out forwards;
+}
+
+/* Dice hide/show when game ends / restarts */
+.dice-box.fadeout {
+  animation: fade-out 2s linear forwards;
+  transform-origin: center;
+}
+
+.dice-box.fadein {
+  animation: fade-in 2s linear forwards;
+  transform-origin: center;
+}
+
+.dice-box.fadeout .face {
+  animation: blur-dice-faces 2s linear forwards;
+  transform-origin: center;
+}
+
+.dice-box.fadein .face {
+  animation: unblur-dice-faces 2s linear forwards;
+  transform-origin: center;
+}
+
+/* Dice rolling state (transform is updated via JS) */
+.dice.rolling {
+  transform: rotateX(0deg) rotateY(0deg);
+}
+
+.dice-box.flashing {
+  animation: flash-animation 4s ease-in-out;
+  transform-origin: center;
+}
+
+/* ------------------ ANIMATIONS ------------------ */
+
+@keyframes pulse-animation {
+  0% {
+    border: 2px solid rgb(193, 150, 42);
+    box-shadow: 0 0 0 0px rgba(226, 52, 156, 0.20),
+      -3px -3px 6px 2px rgba(247, 251, 255, 0.90),
+      4px 4px 5px 3px rgba(80, 90, 105, 0.65);
+    color: var(--black);
+  }
+
+  25% {
+    box-shadow: 2px 0 10px 3px rgba(226, 52, 156, 0.65),
+      inset 0 0 5px 1px rgba(226, 52, 156, 0.55),
+      -3px -3px 6px 2px rgba(247, 251, 255, 0.90),
+      4px 4px 5px 3px rgba(80, 90, 105, 0.65);
+    border: 2px solid #e2349cb8;
+    color: var(--jolly-magenta);
+  }
+
+  50% {
+    border: 2px solid rgb(193, 150, 42);
+    box-shadow: 0 0 0 0px rgba(226, 52, 156, 0.20),
+      -3px -3px 6px 2px rgba(247, 251, 255, 0.90),
+      4px 4px 5px 3px rgba(80, 90, 105, 0.65);
+    color: var(--black);
+  }
+
+  75% {
+    box-shadow: 2px 0 10px 3px rgba(226, 52, 156, 0.65),
+      inset 0 0 5px 1px rgba(226, 52, 156, 0.55),
+      -3px -3px 6px 2px rgba(247, 251, 255, 0.90),
+      4px 4px 5px 3px rgba(80, 90, 105, 0.65);
+    border: 2px solid #e2349cb8;
+    color: var(--jolly-magenta);
+  }
+
+  100% {
+    border: 2px solid rgb(193, 150, 42);
+    box-shadow: 0 0 0 0px rgba(226, 52, 156, 0.20),
+      -3px -3px 6px 2px rgba(247, 251, 255, 0.90),
+      4px 4px 5px 3px rgba(80, 90, 105, 0.65);
+    color: var(--black);
+  }
+}
+
+/* Winner dock emerge */
+@keyframes win-emerge {
+  0% {
+    background-color: #b1b1b1;
+    color: var(--shiny-gold);
+    border: none;
+    box-shadow: none;
+  }
+
+  50% {
+    background-color: #b1b1b1;
+    color: var(--shiny-gold);
+    border: none;
+    box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0);
+  }
+
+  75% {
+    background-color: #b1b1b1;
+    box-shadow: -2px -2px 6px 0px rgba(247, 251, 255, 0.70),
+      3px 3px 6px 2px rgba(80, 90, 105, 0.50);
+  }
+
+  100% {
+    background-color: #b1b1b1;
+    color: var(--shiny-gold);
+    border: none;
+    box-shadow: -4px -4px 10px 0px rgba(247, 251, 255, 0.90),
+      5px 5px 10px 3px rgba(80, 90, 105, 0.65);
+  }
+}
+
+/* Restore winner dock to original style on new game */
+@keyframes original-position {
+  0% {
+    background-color: #b1b1b1;
+    border: none;
+    box-shadow: -4px -4px 10px 0px rgba(247, 251, 255, 0.90),
+      5px 5px 10px 3px rgba(80, 90, 105, 0.65);
+  }
+
+  25% {
+    background-color: #c6c6c6;
+    box-shadow: -2px -2px 6px 0px rgba(247, 251, 255, 0.55),
+      3px 3px 6px 2px rgba(80, 90, 105, 0.40);
+  }
+
+  50% {
+    background-color: #dcdcdc;
+    box-shadow: inset 1px 1px 2px 1px rgba(80, 90, 105, 0.30),
+      inset -1px -1px 2px 1px rgba(247, 251, 255, 0.30);
+  }
+
+  75% {
+    background-color: #e9e9e9;
+    box-shadow: inset 4px 4px 5px 2px rgba(80, 90, 105, 0.50),
+      inset -3px -3px 6px 3px rgba(247, 251, 255, 0.50);
+  }
+
+  100% {
+    background-color: transparent;
+    border: none;
+    box-shadow: inset 6px 5px 6px 3px rgba(80, 90, 105, 0.65),
+      inset -5px -5px 8px 4px rgba(247, 251, 255, 0.65);
+  }
+}
+
+/* Highlight winning score briefly */
+@keyframes highlights {
+  0% {
+    color: var(--black);
+  }
+
+  50% {
+    color: var(--flashy-orange);
+  }
+
+  100% {
+    color: var(--black);
+  }
+}
+
+/* Hide name/score before showing golden winner text */
+@keyframes erease-dock {
+
+  0%,
+  80% {
+    opacity: 0;
+  }
+
+  100% {
+    visibility: hidden;
+    font-size: 0;
+  }
+}
+
+/* Winner name (gold) */
+@keyframes writing-winner-name {
+  0% {
+    margin-top: 3.5rem;
+    opacity: 0;
+    visibility: hidden;
+    color: var(--shiny-gold);
+  }
+
+  80%,
+  100% {
+    margin-top: 3.5rem;
+    font-size: 4rem;
+    opacity: 1;
+    visibility: visible;
+    color: var(--shiny-gold);
+  }
+}
+
+/* Winner message (gold) */
+@keyframes writing-winner-message {
+  0% {
+    font-size: 6.5rem;
+    margin-top: 2rem;
+    opacity: 0;
+    visibility: hidden;
+    color: var(--shiny-gold);
+  }
+
+  80%,
+  100% {
+    font-size: 6.5rem;
+    opacity: 1;
+    visibility: visible;
+    color: var(--shiny-gold);
+  }
+}
+
+/* Dice stage collapse (end game) */
+@keyframes fade-out {
+  0% {
+    width: 14rem;
+    height: 14rem;
+    border: 4px solid var(--black);
+    outline: none;
+  }
+
+  90% {
+    border: 2rem solid var(--red);
+    outline: 3px solid var(--dark-red);
+    width: 0rem;
+    height: 0rem;
+    box-shadow:
+      -4px -4px 6px 3px rgba(247, 251, 255, 0.43),
+      6px 6px 10px 5px rgba(80, 90, 105, 0.65),
+      0px 0px 20px 15px var(--red);
+  }
+
+  100% {
+    border: 2rem solid var(--red);
+    outline: 3px solid var(--dark-red);
+    width: 0rem;
+    height: 0rem;
+    box-shadow:
+      -4px -4px 6px 3px rgba(247, 251, 255, 0.43),
+      6px 6px 10px 5px rgba(80, 90, 105, 0.65),
+      0px 0px 20px 8px var(--red);
+  }
+}
+
+/* Dice stage reopen (new game) */
+@keyframes fade-in {
+  0% {
+    border: 2rem solid var(--red);
+    outline: 3px solid var(--dark-red);
+    width: 0rem;
+    height: 0rem;
+    box-shadow:
+      -4px -4px 6px 3px rgba(247, 251, 255, 0.43),
+      6px 6px 10px 5px rgba(80, 90, 105, 0.65),
+      0px 0px 20px 8px var(--red);
+  }
+
+  5%,
+  15% {
+    border: 2rem solid var(--tech-green-light);
+    outline: 3px solid var(--tech-green);
+    box-shadow:
+      -4px -4px 6px 3px rgba(247, 251, 255, 0.43),
+      6px 6px 10px 5px rgba(80, 90, 105, 0.65),
+      0px 0px 20px 20px var(--tech-green-light);
+  }
+
+  20% {
+    border: 2rem solid var(--tech-green-light);
+    outline: 3px solid var(--tech-green);
+    box-shadow:
+      -4px -4px 6px 3px rgba(247, 251, 255, 0.43),
+      6px 6px 10px 5px rgba(80, 90, 105, 0.65),
+      0px 0px 20px 8px var(--tech-green);
+  }
+
+  25% {
+    box-shadow:
+      -4px -4px 6px 3px rgba(247, 251, 255, 0.90),
+      6px 6px 10px 5px rgba(80, 90, 105, 0.65);
+  }
+
+  40% {
+    border: 2rem solid var(--black);
+    outline: none;
+  }
+
+  60% {
+    border: 3px solid var(--gold);
+  }
+
+  100% {
+    outline: none;
+    border: 3px solid var(--gold);
+    width: 14rem;
+    height: 14rem;
+  }
+}
+
+/* Blur dice faces while collapsing */
+@keyframes blur-dice-faces {
+  0% {
+    filter: blur(0);
+  }
+
+  30%,
+  100% {
+    filter: blur(200px);
+  }
+}
+
+/* Unblur dice faces while reopening */
+@keyframes unblur-dice-faces {
+  0% {
+    filter: blur(200px);
+  }
+
+  80%,
+  100% {
+    filter: blur(0);
+  }
+}
+
+/* Flash effect while rolling */
+@keyframes flash-animation {
+  0% {
+    transform: none;
+    border: 4px solid rgb(193, 150, 42);
+  }
+
+  25% {
+    box-shadow:
+      0px 0px 30px 10px rgba(30, 208, 239, 0.30),
+      inset 0px 0px 30px 20px rgba(30, 208, 239, 0.42),
+      -4px -4px 6px 3px rgba(247, 251, 255, 0.90),
+      7px 4px 10px 7px rgba(80, 90, 105, 0.65);
+    background-color: #cfcfcf;
+  }
+
+  50% {
+    box-shadow:
+      0px 0px 30px 10px rgba(30, 208, 239, 0.75),
+      inset 0px 0px 30px 20px rgba(169, 242, 255, 0.85),
+      -4px -4px 6px 3px rgba(247, 251, 255, 0.90),
+      7px 4px 10px 7px rgba(80, 90, 105, 0.65);
+    background-color: #ededed;
+    border: 4px solid var(--tech-blue);
+  }
+
+  70% {
+    box-shadow:
+      0px 0px 30px 10px rgba(30, 208, 239, 0.30),
+      inset 0px 0px 30px 20px rgba(30, 208, 239, 0.42),
+      -4px -4px 6px 3px rgba(247, 251, 255, 0.90),
+      7px 4px 10px 7px rgba(80, 90, 105, 0.65);
+    background-color: #cfcfcf;
+    border: 4px solid var(--tech-blue);
+  }
+
+  100% {
+    box-shadow:
+      -4px -4px 6px 3px rgba(247, 251, 255, 0.90),
+      7px 4px 10px 7px rgba(80, 90, 105, 0.65);
+    border: 4px solid rgb(193, 150, 42);
+  }
+}
