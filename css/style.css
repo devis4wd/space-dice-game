@@ -1,9 +1,3 @@
-/*
-  This project is distributed under the GPL v2 License.
-  For more details, see the full license text at:
-  https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-*/
-
 @import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Share+Tech+Mono&display=swap');
@@ -150,6 +144,23 @@ main {
   position: relative;
   box-shadow: -4px -4px 6px 3px rgba(247, 251, 255, 0.90),
     6px 6px 10px 5px rgba(80, 90, 105, 0.65);
+}
+
+/*Glassy sphere container effect*/
+.glass-sphere {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;  
+  opacity: 1;
+  transition: opacity 220ms ease;
+}
+
+/* Lower opacity of glassy sphere image during dice rolling animation */
+.glass-sphere.fading-reflex {
+  opacity: 0.85; 
 }
 
 /* 3D cube container */
