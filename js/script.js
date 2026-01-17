@@ -40,6 +40,7 @@ const player1CurrScrScreen = document.getElementById('curr-scr-screen-1');
 const player1CurrScrHeading = document.getElementById('current--1');
 const player2CurrScrScreen = document.getElementById('curr-scr-screen-2');
 const player2CurrScrHeading = document.getElementById('current--2');
+const glassySphereImg = document.querySelector('.glass-sphere');
 
 // Buttons
 const newGameBtn = document.getElementById('btn--new-game');
@@ -97,6 +98,9 @@ rollBtn.addEventListener('click', () => {
   // Flash effect on dice box
   diceBox.classList.add('flashing');
 
+  // NEW: dim glass overlay while rolling
+  glassySphereImg.classList.add('fading-reflex');
+
   // Disable controls during animation
   rollBtn.disabled = true;
   holdBtn.disabled = true;
@@ -141,6 +145,8 @@ rollBtn.addEventListener('click', () => {
         player1.classList.add('player--active');
       }
     }
+    //restore original transparency for glassy sphere img
+    glassySphereImg.classList.remove('fading-reflex');
   }, 4000);
 });
 
