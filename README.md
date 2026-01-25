@@ -1,4 +1,4 @@
-# Space Dice 🎲🚀
+# Space Dice 
 
 **Space Dice** is a browser-based dice game built with **HTML, CSS and Vanilla JavaScript**, featuring a **3D CSS cube**, a space-themed neumorphic-inspired UI, and a fully managed scoring system.  
 This project was created as a **frontend-focused, educational showcase**, with particular attention to animations, game logic, and visual polish — without using frameworks.
